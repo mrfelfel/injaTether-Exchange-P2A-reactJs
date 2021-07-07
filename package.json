@@ -1,0 +1,62 @@
+{
+  "name": "my-app",
+  "homepage": "http://brridge.ir/",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.12.0",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.2.2",
+    "@testing-library/user-event": "^12.6.0",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.5.3",
+    "coinmarketcap-cryptocurrency-icons": "^1.0.1",
+    "font-awesome": "^4.7.0",
+    "react": "^17.0.1",
+    "react-bootstrap": "^1.4.0",
+    "react-client-session": "0.0.7",
+    "react-cookie": "^4.0.3",
+    "react-cryptocoins": "^1.0.11",
+    "react-dom": "^17.0.1",
+    "react-loadingg": "^1.7.2",
+    "react-number-format": "^4.4.1",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "react-tradingview-widget": "^1.3.2",
+    "redux": "^4.1.0",
+    "sweetalert": "^2.1.2",
+    "universal-cookie": "^4.0.4",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@iconify/icons-cryptocurrency": "^1.1.1",
+    "@iconify/react": "^1.1.3",
+    "babel-plugin-jsx-control-statements": "^4.1.0"
+  }
+}
