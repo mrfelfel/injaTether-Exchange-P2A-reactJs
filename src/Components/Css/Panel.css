@@ -16,6 +16,11 @@ body {
   border-radius: 0px;
 }
 
+.modal-dialog {
+  max-width: 900px !important;
+  margin: 1.75rem auto;
+}
+
 .vertical-center {
   min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
   min-height: 91vh; /* These two lines are counted as one :-)       */
@@ -76,7 +81,7 @@ div.content {
 .paddingtop {
   margin-right: 120px;
   padding-top: 6rem;
-  width: 90vw;
+  width: 89vw;
 }
 
 .reportbox {

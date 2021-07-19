@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Container } from 'react-bootstrap';
-import { Form } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
-import { Jumbotron } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {Container} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
+import {Jumbotron} from 'react-bootstrap';
+import {Col} from 'react-bootstrap';
 
 import swal from 'sweetalert';
 
@@ -16,9 +16,6 @@ class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            s: 'marketbase',
-            d: 'irt',
-            dd: 'irt',
             error: null,
             isLoaded: false,
             items: [],
@@ -34,12 +31,18 @@ class Register extends Component {
 
     handleChangePassword(e) {
 
-        this.setState({ password: e.target.value });
+        this.setState({password: e.target.value});
     }
 
-    handleChangeName(e) {
 
-        this.setState({ name: e.target.value });
+    handleChangePasswordAgain(e) {
+
+        this.setState({passwordagain: e.target.value});
+    }
+
+    handleChangePhone(e) {
+
+        this.setState({phone: e.target.value});
     }
 
     ShowSucMessage(e) {
@@ -53,7 +56,7 @@ class Register extends Component {
 
     handleChangeEmail(e) {
 
-        this.setState({ email: e.target.value });
+        this.setState({email: e.target.value});
     }
 
 
@@ -76,26 +79,31 @@ class Register extends Component {
         var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
         result && (result = JSON.parse(result[1]));
         return result;
-      }
-    
+    }
 
 
     LoginHandler(e) {
         //   this.setState({ fromInput: e.target.value })
 
         e.preventDefault();
-        if (this.state.email === "" && this.state.password === "" && this.state.name === "") { this.ShowloginMessage('اطلاعاتی وارد نشده', 'error') } else {
+        if (this.state.email === "" && this.state.password === "" && this.state.name === "") {
+            this.ShowloginMessage('اطلاعاتی وارد نشده', 'error')
+        } else {
             this.ShowloginMessage('در حال ثبت نام', 'info');
 
 
             if (this.mounted) {
                 const requestOptions = {
                     method: 'post',
-                    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-                    body: JSON.stringify({ 'email': this.state.email, 'password': this.state.password, 'name': this.state.name })
+                    headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    body: JSON.stringify({
+                        'email': this.state.email,
+                        'password': this.state.password,
+                        'phone': this.state.phone
+                    })
                 };
 
-                fetch(this.getCookie('__react_session__')['url']  + "/api/v1/register", requestOptions)
+                fetch(this.getCookie('__react_session__')['url'] + "/users", requestOptions)
                     .then(res => res.json())
                     .then(
                         (result) => {
@@ -105,23 +113,24 @@ class Register extends Component {
                                 formInput: ''
                             });
 
-
-                            if (result.status === 'ok') {
-                                this.ShowloginMessage('ثبت نام با موفقیت انجام شد', 'success');
-                                this.props.history.push("/login");
+                            if (this.state.password != this.state.passwordagain) {
+                                this.ShowloginMessage('تکرار رمز عبور به درستی وارد نشده', 'error');
                             } else {
 
-                                if (result.error.name == 'The name field is required.') {
-                                    this.ShowloginMessage('نام کاربری خالی است', 'error');
-                                }
+                                if (result.id != null) {
+                                    this.ShowloginMessage('ثبت نام با موفقیت انجام شد', 'success');
+                                    this.props.history.push("/login");
+                                } else {
 
-                                if (result.error.email !== '') {
-                                    this.ShowloginMessage('نام کاربری و یا ایمیل شما تکراری است', 'error');
-                                }
-                                if (result.error.name !== '') {
-                                    this.ShowloginMessage('نام کاربری و یا ایمیل شما تکراری است', 'error');
-                                }
+                                    if (result.statusCode === 400) {
+                                        this.ShowloginMessage('اطلاعات به درستی وارد نشده', 'error');
+                                    }
 
+                                    if (result.statusCode === 403) {
+                                        this.ShowloginMessage('اطلاعات وارد شده در سیستم وجود دارد', 'error');
+                                    }
+
+                                }
                             }
                         },
                         // Note: it's important to handle errors here
@@ -145,12 +154,12 @@ class Register extends Component {
 
         return (
 
-            <div style={{backgroundColor:'#009393'}}>
-                <HeaderIndex />
+            <div style={{backgroundColor: '#009393', height: '100vh', overflow: 'hidden'}}>
+                <HeaderIndex/>
 
                 <Container>
 
-                    <Col md={5} className="mx-auto mt-5">
+                    <Col md={5} className="mx-auto mt-3">
                         <Jumbotron style={{
                             boxShadow: 'rgb(38, 57, 77) 0px 20px 30px -10px',
                             backgroundColor: 'white'
@@ -158,28 +167,43 @@ class Register extends Component {
 
                             <Form onSubmit={this.LoginHandler.bind(this)} style={{textAlign: 'right'}}>
                                 <Form.Group controlId="formBasicEmail">
-                                    <Form.Label>نام کاربری</Form.Label>
-                                    <Form.Control style={{border:'1px solid #24a2a2'}} type="name" placeholder="نام کاربری خود را وارد کنید" onChange={this.handleChangeName.bind(this)} required />
+                                    <Form.Label>شماره موبایل</Form.Label>
+                                    <Form.Control style={{border: '1px solid #24a2a2'}} type="phone"
+                                                  placeholder="09123456789"
+                                                  onChange={this.handleChangePhone.bind(this)} required/>
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicEmail">
                                     <Form.Label>ایمیل</Form.Label>
-                                    <Form.Control style={{border:'1px solid #24a2a2'}} type="email" placeholder="ایمیل را وارد کنید" onChange={this.handleChangeEmail.bind(this)} required />
+                                    <Form.Control style={{border: '1px solid #24a2a2'}} type="email"
+                                                  placeholder="ایمیل را وارد کنید"
+                                                  onChange={this.handleChangeEmail.bind(this)} required/>
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicPassword">
                                     <Form.Label>رمز عبور</Form.Label>
-                                    <Form.Control style={{border:'1px solid #24a2a2'}} type="password" placeholder="رمز عبور را وارد کنید" onChange={this.handleChangePassword.bind(this)} required />
+                                    <Form.Control style={{border: '1px solid #24a2a2'}} type="password"
+                                                  placeholder="بیشتر از ۸ کاراکتر"
+                                                  onChange={this.handleChangePassword.bind(this)} required/>
                                 </Form.Group>
-                                <Button className="btnp" style={{backgroundColor:'#24A2A2',border:0}} type="submit" size="lg" block>
+
+                                <Form.Group controlId="formBasicPassword">
+                                    <Form.Label>تکرار رمز عبور</Form.Label>
+                                    <Form.Control style={{border: '1px solid #24a2a2'}} type="password"
+                                                  placeholder="رمز عبور را وارد کنید"
+                                                  onChange={this.handleChangePasswordAgain.bind(this)} required/>
+                                </Form.Group>
+
+                                <Button className="btnp" style={{backgroundColor: '#24A2A2', border: 0}} type="submit"
+                                        size="lg" block>
                                     ثبت نام
-  </Button>
+                                </Button>
                             </Form>
 
                         </Jumbotron>
                     </Col>
                 </Container>
-                </div>
+            </div>
 
         );
     }

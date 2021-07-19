@@ -4,7 +4,7 @@ import {Navbar} from 'react-bootstrap';
 import {Nav} from 'react-bootstrap';
 import {connect} from "react-redux";
 
-import { Icon } from "coinmarketcap-cryptocurrency-icons";
+import {Icon} from "coinmarketcap-cryptocurrency-icons";
 import ShoppingCartRoundedIcon from '@material-ui/icons/ShoppingCartRounded';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import EmailRoundedIcon from '@material-ui/icons/EmailRounded';
@@ -47,38 +47,56 @@ class HeaderPanel extends Component {
     componentDidMount() {
         const requestOptions = {
             method: 'get',
-            headers: {'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*' ,
-                'Authorization': ' Bearer ' + this.getCookie('__react_session__')['token']}
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Authorization': ' Bearer ' + this.getCookie('__react_session__')['token']
+            }
         };
+        try {
 
-        fetch(this.getCookie('__react_session__')['url'] + "/auth/profile", requestOptions)
-            .then(res => res.json())
-            .then(
-                async (result) => {
+            fetch(this.getCookie('__react_session__')['url'] + "/auth/profile", requestOptions)
+                .then(res => res.json())
+                .then(
+                    async (result) => {
 
-                    if (result.data === null) {
-                        window.location.replace("/login");
+                        if (result.statusCode === 500) {
+                            window.location.replace("/login");
+                        }
+
+                        if (result.statusCode === 401) {
+                            window.location.replace("/login");
+                        }
+
+                        if (result === null) {
+                            window.location.replace("/login");
+                        }
+
+                        if (result.data === null) {
+                            window.location.replace("/login");
+                        }
+
+                        await this.setState({
+                            isLoaded: true,
+                            data: result,
+                            formInput: ''
+                        });
+
+                    },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        this.setState({
+                            isLoaded: true,
+                            work: true,
+                            error
+                        });
                     }
+                )
+        } catch (e) {
 
-                    await this.setState({
-                        isLoaded: true,
-                        data: result,
-                        formInput: ''
-                    });
-
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        work: true,
-                        error
-                    });
-                }
-            )
+        }
     }
 
     increment = () => {
@@ -89,7 +107,7 @@ class HeaderPanel extends Component {
             text: this.state.count
         })
 
-         this.props.dispatch({
+        this.props.dispatch({
             type: 'ADDNAME',
             text: this.state.name
         })
@@ -131,7 +149,7 @@ class HeaderPanel extends Component {
                         backgroundColor: '#F6F6F6',
                         paddingLeft: '1rem',
                     }}>
-                        <Navbar.Brand href="#home"><Icon i='usdt' size={25} />  اینجاتتر  </Navbar.Brand>
+                        <Navbar.Brand href="#home"><Icon i='usdt' size={25}/> اینجاتتر </Navbar.Brand>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Nav className="mr-auto">
@@ -150,12 +168,16 @@ class HeaderPanel extends Component {
 
 
                 <div className="sidebar">
-                    <Link as={Link} to="/panel/dashboard"><HomeRoundedIcon style={{ fontSize: 30 , color:'white' }}></HomeRoundedIcon></Link>
-                    <Link as={Link} to="/panel/coins"><ShoppingCartRoundedIcon style={{ fontSize: 30 , color:'white'}}></ShoppingCartRoundedIcon></Link>
-                    <Link as={Link} to="/panel/alertlist"><EmailRoundedIcon style={{ fontSize: 30 , color:'white'}}></EmailRoundedIcon></Link>
-                    <Link as={Link} to="/panel/trade"><AccountCircleRoundedIcon style={{ fontSize: 30 , color:'white'}}></AccountCircleRoundedIcon></Link>
+                    <Link as={Link} to="/panel/dashboard"><HomeRoundedIcon
+                        style={{fontSize: 30, color: 'white'}}></HomeRoundedIcon></Link>
+                    <Link as={Link} to="/panel/coins"><ShoppingCartRoundedIcon
+                        style={{fontSize: 30, color: 'white'}}></ShoppingCartRoundedIcon></Link>
+                    <Link as={Link} to="/panel/alertlist"><EmailRoundedIcon
+                        style={{fontSize: 30, color: 'white'}}></EmailRoundedIcon></Link>
+                    <Link as={Link} to="/panel/kyc"><AccountCircleRoundedIcon
+                        style={{fontSize: 30, color: 'white'}}></AccountCircleRoundedIcon></Link>
 
-                   {/* <a onClick={this.increment.bind(this)}>{this.props.count}</a>
+                    {/* <a onClick={this.increment.bind(this)}>{this.props.count}</a>
                     <a onClick={this.increment.bind(this)}>{this.props.name}</a>*/}
                 </div>
 
@@ -166,7 +188,7 @@ class HeaderPanel extends Component {
 }
 
 const mapStateToProps = state => {
-console.log(state)
+    console.log(state)
     return {
         name: state.name,
         count: state.count

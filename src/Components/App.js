@@ -21,6 +21,7 @@ import {
 import {Provider} from "react-redux";
 import {createStore} from "redux";
 import reducer from "./Reducer";
+import Kyc from "./Panel/Kyc";
 
 
 class App extends Component {
@@ -126,10 +127,10 @@ class App extends Component {
                         {this.state.auth &&
                         <Route path="/panel/dashboard" component={Dashboard}/>
                         }
-                       {/* {this.state.auth &&
-                        <Route path="/panel/watchlist" component={Watchlist}/>
-                        }
                         {this.state.auth &&
+                        <Route path="/panel/kyc" component={Kyc}/>
+                        }
+                     {/*   {this.state.auth &&
                         <Route path="/panel/alertlist" component={Alertlist}/>
                         }
                         {this.state.auth &&
