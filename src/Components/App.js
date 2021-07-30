@@ -17,11 +17,9 @@ import {
     Route,
 } from "react-router-dom";
 
-//redux
-import {Provider} from "react-redux";
-import {createStore} from "redux";
-import reducer from "./Reducer";
 import Kyc from "./Panel/Kyc";
+import Tickets from "./Panel/Tickets";
+import BuySell from "./Panel/BuySell";
 
 
 class App extends Component {
@@ -35,9 +33,6 @@ class App extends Component {
         };
         this.mounted = true;
     }
-
-    //redux
-    store = createStore(reducer);
 
     getCookie(name) {
         var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
@@ -66,12 +61,15 @@ class App extends Component {
         if (this.getCookie('__react_session__') != null) {
 
             const requestOptions = {
-                method: 'post',
-                headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                body: JSON.stringify({'api_token': this.getCookie('__react_session__')['token']})
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Authorization': ' Bearer ' + this.getCookie('__react_session__')['token']
+                }
             };
 
-            fetch(this.getCookie('__react_session__')['url'] + "/api/v1/panel/dashboard", requestOptions)
+            fetch(this.getCookie('__react_session__')['url'] + "/auth/profile", requestOptions)
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -119,7 +117,6 @@ class App extends Component {
         return (
 
             < Router>
-                <Provider store={this.store}>
 
 
                     <Switch>
@@ -129,6 +126,12 @@ class App extends Component {
                         }
                         {this.state.auth &&
                         <Route path="/panel/kyc" component={Kyc}/>
+                        }
+                        {this.state.auth &&
+                        <Route path="/panel/tickets" component={Tickets}/>
+                        }
+                        {this.state.auth &&
+                        <Route path="/panel/buysell" component={BuySell}/>
                         }
                      {/*   {this.state.auth &&
                         <Route path="/panel/alertlist" component={Alertlist}/>
@@ -151,7 +154,6 @@ class App extends Component {
 
                     </Switch>
 
-                </Provider>
             </Router>
 
         )

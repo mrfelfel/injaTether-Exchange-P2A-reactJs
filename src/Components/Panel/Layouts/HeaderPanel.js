@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 import {Navbar} from 'react-bootstrap';
 import {Nav} from 'react-bootstrap';
-import {connect} from "react-redux";
 
 import {Icon} from "coinmarketcap-cryptocurrency-icons";
 import ShoppingCartRoundedIcon from '@material-ui/icons/ShoppingCartRounded';
@@ -99,20 +98,6 @@ class HeaderPanel extends Component {
         }
     }
 
-    increment = () => {
-
-        console.log(this.props)
-        this.props.dispatch({
-            type: 'INCREMENT',
-            text: this.state.count
-        })
-
-        this.props.dispatch({
-            type: 'ADDNAME',
-            text: this.state.name
-        })
-
-    }
 
     render() {
 
@@ -127,14 +112,14 @@ class HeaderPanel extends Component {
                 <div className="topnavmobile">
 
                     <Navbar bg="light" expand="lg">
-                        <Navbar.Brand href="#home">پنل کاربری برییج</Navbar.Brand>
+                        <Navbar.Brand href="#home"><Icon i='usdt' size={25}/> اینجاتتر </Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="mr-auto">
                                 <Nav.Link as={Link} to="/panel/dashboard">داشبورد</Nav.Link>
-                                <Nav.Link as={Link} to="/panel/coins">قیمت ها</Nav.Link>
-                                <Nav.Link as={Link} to="/panel/alertlist">هشدار قیمت</Nav.Link>
-                                <Nav.Link as={Link} to="/panel/trade">خرید و فروش</Nav.Link>
+                                <Nav.Link as={Link} to="/panel/kyc">پروفایل</Nav.Link>
+                                <Nav.Link as={Link} to="/panel/tickets">پشتیبانی</Nav.Link>
+                                <Nav.Link as={Link} to="/panel/buysell">خرید و فروش</Nav.Link>
                             </Nav>
                         </Navbar.Collapse>
                     </Navbar>
@@ -170,9 +155,9 @@ class HeaderPanel extends Component {
                 <div className="sidebar">
                     <Link as={Link} to="/panel/dashboard"><HomeRoundedIcon
                         style={{fontSize: 30, color: 'white'}}></HomeRoundedIcon></Link>
-                    <Link as={Link} to="/panel/coins"><ShoppingCartRoundedIcon
+                    <Link as={Link} to="/panel/buysell"><ShoppingCartRoundedIcon
                         style={{fontSize: 30, color: 'white'}}></ShoppingCartRoundedIcon></Link>
-                    <Link as={Link} to="/panel/alertlist"><EmailRoundedIcon
+                    <Link as={Link} to="/panel/tickets"><EmailRoundedIcon
                         style={{fontSize: 30, color: 'white'}}></EmailRoundedIcon></Link>
                     <Link as={Link} to="/panel/kyc"><AccountCircleRoundedIcon
                         style={{fontSize: 30, color: 'white'}}></AccountCircleRoundedIcon></Link>
@@ -187,12 +172,4 @@ class HeaderPanel extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    console.log(state)
-    return {
-        name: state.name,
-        count: state.count
-    }
-};
-
-export default connect(mapStateToProps)(HeaderPanel);
+export default HeaderPanel;

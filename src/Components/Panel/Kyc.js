@@ -703,8 +703,7 @@ class Kyc extends Component {
                                 <p style={{color: 'green'}}>شما با موفقیت احراز هویت شدید</p>
                             </Card.Body>
                         </Card>}
-                    <div className="content">
-                    </div>
+
                 </div>
                         :   <div className="paddingtop">
 
