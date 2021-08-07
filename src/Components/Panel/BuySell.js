@@ -95,7 +95,7 @@ class BuySell extends Component {
         }
 
 
-        const socket = io('http://localhost:4000');
+        const socket = io(this.getCookie('__react_session__')['url']);
         socket.on('connect', function () {
             console.log('Connected');
 
