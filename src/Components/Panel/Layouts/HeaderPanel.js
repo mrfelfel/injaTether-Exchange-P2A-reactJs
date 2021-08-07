@@ -8,6 +8,7 @@ import ShoppingCartRoundedIcon from '@material-ui/icons/ShoppingCartRounded';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import EmailRoundedIcon from '@material-ui/icons/EmailRounded';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
+import CreditCardRoundedIcon from '@material-ui/icons/CreditCardRounded';
 
 import {
     Link,
@@ -120,6 +121,7 @@ class HeaderPanel extends Component {
                                 <Nav.Link as={Link} to="/panel/kyc">پروفایل</Nav.Link>
                                 <Nav.Link as={Link} to="/panel/tickets">پشتیبانی</Nav.Link>
                                 <Nav.Link as={Link} to="/panel/buysell">خرید و فروش</Nav.Link>
+                                <Nav.Link as={Link} to="/panel/cards">کارت بانکی</Nav.Link>
                             </Nav>
                         </Navbar.Collapse>
                     </Navbar>
@@ -161,6 +163,8 @@ class HeaderPanel extends Component {
                         style={{fontSize: 30, color: 'white'}}></EmailRoundedIcon></Link>
                     <Link as={Link} to="/panel/kyc"><AccountCircleRoundedIcon
                         style={{fontSize: 30, color: 'white'}}></AccountCircleRoundedIcon></Link>
+                    <Link as={Link} to="/panel/cards"><CreditCardRoundedIcon
+                        style={{fontSize: 30, color: 'white'}}></CreditCardRoundedIcon></Link>
 
                     {/* <a onClick={this.increment.bind(this)}>{this.props.count}</a>
                     <a onClick={this.increment.bind(this)}>{this.props.name}</a>*/}

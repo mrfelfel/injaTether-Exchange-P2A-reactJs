@@ -20,6 +20,7 @@ import {
 import Kyc from "./Panel/Kyc";
 import Tickets from "./Panel/Tickets";
 import BuySell from "./Panel/BuySell";
+import Cards from "./Panel/Cards";
 
 
 class App extends Component {
@@ -132,6 +133,9 @@ class App extends Component {
                         }
                         {this.state.auth &&
                         <Route path="/panel/buysell" component={BuySell}/>
+                        }
+                        {this.state.auth &&
+                        <Route path="/panel/cards" component={Cards}/>
                         }
                      {/*   {this.state.auth &&
                         <Route path="/panel/alertlist" component={Alertlist}/>
