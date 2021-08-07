@@ -53,7 +53,7 @@ class App extends Component {
 
 
         ReactSession.setStoreType("cookie");
-        ReactSession.set("url", 'http://localhost:4000');
+        ReactSession.set("url", 'http://185.110.189.246:8080');
 
         this.setState({
             auth: false,
