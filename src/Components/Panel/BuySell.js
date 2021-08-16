@@ -52,8 +52,9 @@ class BuySell extends Component {
             priceSend: '',
             valueSend: '',
             orderStatus: '',
-            firstif:'',
-            orderId:'',
+            firstif: '',
+            orderId: '',
+            profile: '',
         };
 
     }
@@ -67,7 +68,6 @@ class BuySell extends Component {
     componentWillUnmount() {
         // stop sending ajax when client in other page
         this.mounted = false;
-
     }
 
     componentDidMount(props) {
@@ -79,7 +79,7 @@ class BuySell extends Component {
             axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
             axios.get(this.getCookie('__react_session__')['url'] + "/cards/valid")
                 .then(response => {
-                    console.log(response.data.length)
+
                     if (response.data.status !== 304) {
                         this.setState({
                             cards: response.data,
@@ -96,6 +96,7 @@ class BuySell extends Component {
 
 
         const socket = io(this.getCookie('__react_session__')['url']);
+
         socket.on('connect', function () {
             console.log('Connected');
 
@@ -120,7 +121,7 @@ class BuySell extends Component {
             })
         });
         socket.on('exception', function (data) {
-            console.log('event', data);
+
         });
         socket.on('disconnect', function () {
             console.log('Disconnected');
@@ -156,6 +157,55 @@ class BuySell extends Component {
                 usdtPrice: response
             })
         });*/
+
+        const requestOptions = {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Authorization': ' Bearer ' + this.getCookie('__react_session__')['token']
+            }
+        };
+        try {
+
+            fetch(this.getCookie('__react_session__')['url'] + "/auth/profile", requestOptions)
+                .then(res => res.json())
+                .then(
+                    async (result) => {
+
+                        if (result.statusCode === 500) {
+                            window.location.replace("/login");
+                        }
+
+                        if (result.statusCode === 401) {
+                            window.location.replace("/login");
+                        }
+
+                        if (result === null) {
+                            window.location.replace("/login");
+                        }
+
+                        if (result.data === null) {
+                            window.location.replace("/login");
+                        }
+
+                        await this.setState({
+                            profile: result,
+                        });
+
+                    },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        this.setState({
+                            profile: '',
+                        });
+                    }
+                )
+        } catch (e) {
+
+        }
 
     }
 
@@ -193,7 +243,7 @@ class BuySell extends Component {
             })
                 .then(response => {
                     const tomanFee = response.data[0].fee * this.state.usdtPriceBuy;
-                    console.log(tomanFee)
+
                     this.setState({
                         subCoinData: response.data[0],
                         tomanFee: tomanFee,
@@ -222,14 +272,14 @@ class BuySell extends Component {
     }
 
 
-   async SendOrder(e) {
+    async SendOrder(e) {
 
         if (this.state.SellOrBuy === 'Buy') {
             if (this.state.UsdtValueBuy === '') {
-              await this.setState({
+                await this.setState({
                     firstif: false
                 })
-            }else{
+            } else {
                 await this.setState({
                     firstif: true
                 })
@@ -241,14 +291,14 @@ class BuySell extends Component {
                 await this.setState({
                     firstif: false
                 })
-            }else{
-                await  this.setState({
+            } else {
+                await this.setState({
                     firstif: true
                 })
             }
         }
 
-        if (this.state.wallet !== '' && this.state.network !== '' && this.state.cardSelected !== ''&& this.state.firstif === true) {
+        if (this.state.wallet !== '' && this.state.network !== '' && this.state.cardSelected !== '' && this.state.firstif === true) {
 
             try {
                 if (this.state.SellOrBuy === 'Buy') {
@@ -258,14 +308,14 @@ class BuySell extends Component {
                         costSend: this.state.UsdtValueBuy - this.state.subCoinData.fee
                     })
                 } else {
-                    await  this.setState({
+                    await this.setState({
                         priceSend: this.state.usdtPriceBuy,
                         valueSend: this.state.UsdtValueSell,
                         costSend: this.state.UsdtValueSell
                     })
                 }
-                 axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
-                await  axios.post(this.getCookie('__react_session__')['url'] + "/orders", {
+                axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
+                await axios.post(this.getCookie('__react_session__')['url'] + "/orders", {
                     type: this.state.SellOrBuy,
                     currency: this.state.currency,
                     price: this.state.priceSend,
@@ -309,6 +359,7 @@ class BuySell extends Component {
             cardSelected,
             orderStatus,
             orderId,
+            profile,
         } = this.state;
 
         return (
@@ -446,13 +497,23 @@ class BuySell extends Component {
                                             }
                                         </Row>
 
+                                        {profile.status === 'done' &&
                                         <Button onClick={this.SendOrder.bind(this)}
                                                 style={{width: ' 100%', marginTop: '2rem'}} size="large"
                                                 className="mx-auto"
                                                 color="primary"
                                                 variant="contained">
                                             ثبت سفارش
-                                        </Button>
+                                        </Button>}
+
+                                        {profile.status !== 'done' &&
+                                        <Link as={Link} to="/panel/kyc"><Button
+                                            style={{width: ' 100%', marginTop: '2rem'}} size="large"
+                                            className="mx-auto"
+                                            color="danger"
+                                            variant="contained">
+                                            برای ثبت سفارش نیاز به احراز هویت دارید، کلیک کنید
+                                        </Button></Link>}
 
                                     </Card.Body>
                                 </Card>

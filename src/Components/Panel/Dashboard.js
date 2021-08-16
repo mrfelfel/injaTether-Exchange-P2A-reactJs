@@ -23,8 +23,9 @@ class Dashboard extends Component {
             orders: '',
             order: '',
             showOrder: '',
+            usdtPriceSell: null,
+            usdtPriceBuy: null,
         };
-
     }
 
     getCookie(name) {
@@ -57,8 +58,6 @@ class Dashboard extends Component {
                 });
         } catch (e) {
         }
-
-
     }
 
     orderDetail(id, e) {

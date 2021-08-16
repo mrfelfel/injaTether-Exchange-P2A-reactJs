@@ -53,7 +53,7 @@ class App extends Component {
 
 
         ReactSession.setStoreType("cookie");
-        ReactSession.set("url", 'http://185.110.189.246:8080');
+        ReactSession.set("url", 'https://api.injatether.com');
 
         this.setState({
             auth: false,

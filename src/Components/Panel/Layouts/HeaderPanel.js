@@ -13,6 +13,7 @@ import CreditCardRoundedIcon from '@material-ui/icons/CreditCardRounded';
 import {
     Link,
 } from "react-router-dom";
+import {Button} from "@material-ui/core";
 
 
 class HeaderPanel extends Component {
@@ -113,7 +114,7 @@ class HeaderPanel extends Component {
                 <div className="topnavmobile">
 
                     <Navbar bg="light" expand="lg">
-                        <Navbar.Brand href="#home"><Icon i='usdt' size={25}/> اینجاتتر </Navbar.Brand>
+                        <Navbar.Brand href="#home"> <Link as={Link} to="/panel/dashboard"><Icon i='usdt' size={25}/> اینجاتتر </Link></Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="mr-auto">

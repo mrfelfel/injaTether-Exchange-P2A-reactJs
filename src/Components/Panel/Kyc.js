@@ -43,6 +43,8 @@ class Kyc extends Component {
             VerifyHomeNumber: false,
             VerifyBirthDate: false,
             VerifyFinalCheckDone: false,
+            isuploadingNational: false,
+            isuploadingSelfi: false,
         };
 
     }
@@ -278,6 +280,10 @@ class Kyc extends Component {
         // Details of the uploaded file
         console.log(this.state.selectedFileNationalId);
 
+        this.setState({
+            isuploadingNational: true,
+        })
+
         try {
             axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
             axios.post(this.getCookie('__react_session__')['url'] + "/users/kyc/nationalId", formData).then
@@ -285,6 +291,7 @@ class Kyc extends Component {
                 if (response.status === 201) {
                     this.setState({
                         selectedFileNationalId_Status: 'success',
+                        isuploadingNational: false
                     })
                 }
                 if (response.status === 401) {
@@ -293,16 +300,19 @@ class Kyc extends Component {
                 if (response.status === 500) {
                     this.setState({
                         selectedFileNationalId_Status: 'notcorrectfile',
+                        isuploadingNational: false
                     })
                 }
             }).catch((error) => {
                 this.setState({
                     selectedFileNationalId_Status: 'notcorrectfile',
+                    isuploadingNational: false
                 })
             });
         } catch (e) {
             this.setState({
                 selectedFileNationalId_Status: 'notcorrectfile',
+                isuploadingNational: false
             })
         }
     };
@@ -313,6 +323,9 @@ class Kyc extends Component {
     };
 
     onFileUploadSelfi() {
+        this.setState({
+            isuploadingSelfi: true,
+        })
         // Create an object of formData
         const formData = new FormData();
         // Update the formData object
@@ -329,6 +342,7 @@ class Kyc extends Component {
                 if (response.status === 201) {
                     this.setState({
                         selectedFileSelfi_Status: 'success',
+                        isuploadingSelfi: false,
                     })
                 }
                 if (response.status === 401) {
@@ -337,11 +351,13 @@ class Kyc extends Component {
             }).catch((error) => {
                 this.setState({
                     selectedFileSelfi_Status: 'notcorrectfile',
+                    isuploadingSelfi: false,
                 })
             });
         } catch (e) {
             this.setState({
                 selectedFileSelfi_Status: 'notcorrectfile',
+                isuploadingSelfi: false,
             })
         }
     };
@@ -455,7 +471,9 @@ class Kyc extends Component {
             VerifyEmailCode,
             VerifySmsCode,
             selectedFileNationalId_Status,
-            selectedFileSelfi_Status
+            selectedFileSelfi_Status,
+            isuploadingNational,
+            isuploadingSelfi,
         } = this.state;
 
 
@@ -645,6 +663,9 @@ class Kyc extends Component {
                                                 :
                                                 <p style={{color: 'red'}}>عکس کارت ملی شما تایید نشد لطفا دوباره با رفع
                                                     اشکال ارسال کنید</p>}
+                                            {(isuploadingNational != true) ?
+                                                ''
+                                                : <p style={{color: 'green'}}>در حال آپلود</p>}
                                         < /Form.Group>
                                         <p>لطفا تصویر کارت ملی را در کنار چهره خودتان همراه با یک دست نوشته به صورت
                                             کاملا خوانا و واضح دقیقا مانند تصویر نمونه ارسال نمایید. دقت شود متن دست
@@ -678,6 +699,9 @@ class Kyc extends Component {
                                                 ''
                                                 : <p style={{color: 'red'}}>عکس سلفی شما تایید نشد لطفا دوباره با رفع
                                                     اشکال ارسال کنید</p>}
+                                            {(isuploadingSelfi != true) ?
+                                                ''
+                                                : <p style={{color: 'green'}}>در حال آپلود</p>}
                                         </Form.Group>
 
                                     </div>

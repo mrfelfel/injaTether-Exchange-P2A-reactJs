@@ -1,11 +1,13 @@
 {
   "name": "my-app",
-  "homepage": "http://brridge.ir/",
+  "homepage": "https://injatether.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.0",
     "@material-ui/icons": "^4.11.2",
+    "@sentry/react": "^6.11.0",
+    "@sentry/tracing": "^6.11.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
