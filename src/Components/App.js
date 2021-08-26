@@ -21,6 +21,7 @@ import Kyc from "./Panel/Kyc";
 import Tickets from "./Panel/Tickets";
 import BuySell from "./Panel/BuySell";
 import Cards from "./Panel/Cards";
+import Solidity from "./Solidity";
 
 
 class App extends Component {
@@ -150,6 +151,7 @@ class App extends Component {
                         <Route path="/logout" component={Logout}/>
                         {/*<Route path="/coins/:id" component={CoinShow}/>*/}
                         <Route exact path="/login" component={Login}/>
+                        <Route exact path="/solidity" component={Solidity}/>
                         <Route exact path="/register" component={Register}/>
 
                         <Route exact path="/" component={Index}/>
