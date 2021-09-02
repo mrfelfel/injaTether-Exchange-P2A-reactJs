@@ -95,7 +95,36 @@ class BuySell extends Component {
         }
 
 
-        const socket = io(this.getCookie('__react_session__')['url']);
+        try {
+            setInterval(() => {
+            axios.post(this.getCookie('__react_session__')['url'] + "/coins/single",{sign:'usdt'})
+                .then(response => {
+
+                    if (response.data.status !== 304) {
+                        this.setState({
+                            usdtPriceSell: response.data.sellPrice,
+                            usdtPriceBuy: response.data.buyPrice
+                        })
+                    } else {
+                    }
+
+                });
+            }, 5000);
+        } catch (e) {
+        }
+
+        try {
+                axios.post(this.getCookie('__react_session__')['url'] + "/coins/network/all",{crypto_id:1})
+                    .then(response => {
+                            this.setState({
+                                subcoinsArray: response.data,
+                            })
+                    });
+        } catch (e) {
+        }
+
+
+      /*  const socket = io(this.getCookie('__react_session__')['url']);
 
         socket.on('connect', function () {
             console.log('Connected');
@@ -125,7 +154,7 @@ class BuySell extends Component {
         });
         socket.on('disconnect', function () {
             console.log('Disconnected');
-        });
+        });*/
         /*  const socket = io('http://localhost:4000');
           socket.on('connect', function() {
               console.log('Connected');

@@ -17,6 +17,7 @@ import {Card, CardDeck, Button, Container, Row, Form} from 'react-bootstrap';
 import {io} from "socket.io-client";
 import logoToman from './img/logoToman.png';
 import {Icon} from "coinmarketcap-cryptocurrency-icons";
+import axios from "axios";
 
 
 class Index extends Component {
@@ -43,42 +44,26 @@ class Index extends Component {
         this.mounted = false;
     }
 
-    componentDidMount(props)
-    {
+    componentDidMount(props) {
         this.mounted = true;
         document.title = "اینجاتتر"
 
-        const socket = io(this.getCookie('__react_session__')['url']);
-        console.log('socket url is' + socket)
-        socket.on('connect', function () {
-            console.log('Connected');
 
-            socket.emit('events', {test: 'test'});
-            socket.emit('coins', 0, response =>
-                console.log('coins:', response),
-            );
-            socket.emit('subcoins', 0, response => {
+        try {
+            axios.post(this.getCookie('__react_session__')['url'] + "/coins/single",{sign:'usdt'})
+                .then(response => {
 
-                }
-            );
-        });
-        socket.on('coins', (data) => {
-            this.setState({
-                usdtPriceSell: data[0].sellPrice,
-                usdtPriceBuy: data[0].buyPrice
-            })
-        });
-        socket.on('subcoins', (data) => {
-            this.setState({
-                subcoinsArray: data
-            })
-        });
-        socket.on('exception', function (data) {
-            console.log('event', data);
-        });
-        socket.on('disconnect', function () {
-            console.log('Disconnected');
-        });
+                    if (response.data.status !== 304) {
+                        this.setState({
+                            usdtPriceSell: response.data.sellPrice,
+                            usdtPriceBuy: response.data.buyPrice
+                        })
+                    } else {
+                    }
+
+                });
+        } catch (e) {
+        }
 
     }
 
@@ -101,7 +86,7 @@ class Index extends Component {
 
     render() {
 
-        const {usdtPriceSell , usdtPriceBuy, UsdtValueSell, UsdtValueBuy} = this.state;
+        const {usdtPriceSell, usdtPriceBuy, UsdtValueSell, UsdtValueBuy} = this.state;
 
         return (
 
@@ -129,16 +114,20 @@ class Index extends Component {
                                         <Form.Group>
                                             <Form.Label style={{float: 'right'}}><img src={logoToman}
                                                                                       alt="Logo"/> میدهید</Form.Label>
-                                            <Form.Control type="number" placeholder={usdtPriceSell} onChange={this.handleTomanToUsdt.bind(this)}/>
+                                            <Form.Control type="number" placeholder={usdtPriceSell}
+                                                          onChange={this.handleTomanToUsdt.bind(this)}/>
                                         </Form.Group>
 
                                         <Form.Group>
-                                            <Form.Label style={{float: 'right'}}><Icon i='usdt' size={36}/> میگیرید</Form.Label>
-                                            <Form.Control placeholder='1' value={UsdtValueBuy.toLocaleString(undefined, {maximumFractionDigits: 2})}
+                                            <Form.Label style={{float: 'right'}}><Icon i='usdt'
+                                                                                       size={36}/> میگیرید</Form.Label>
+                                            <Form.Control placeholder='1'
+                                                          value={UsdtValueBuy.toLocaleString(undefined, {maximumFractionDigits: 2})}
                                                           disabled/>
                                         </Form.Group>
 
-                                        <Link as={Link} to="/register"><Button size="lg" variant="outline-light" type="submit">
+                                        <Link as={Link} to="/register"><Button size="lg" variant="outline-light"
+                                                                               type="submit">
                                             خرید
                                         </Button></Link>
                                     </Form>
@@ -157,7 +146,8 @@ class Index extends Component {
 
                                     <Form>
                                         <Form.Group>
-                                            <Form.Label style={{float: 'right'}}><Icon i='usdt' size={36}/> میدهید</Form.Label>
+                                            <Form.Label style={{float: 'right'}}><Icon i='usdt'
+                                                                                       size={36}/> میدهید</Form.Label>
                                             <Form.Control style={{border: '2px solid #24a2a2'}} type="number"
                                                           onChange={this.handleUsdtToToman.bind(this)} placeholder='1'/>
                                         </Form.Group>
@@ -166,11 +156,17 @@ class Index extends Component {
                                             <Form.Label style={{float: 'right'}}><img src={logoToman}
                                                                                       alt="Logo"/> میگیرد</Form.Label>
                                             <Form.Control style={{border: '2px solid #24a2a2'}}
-                                                        placeholder={usdtPriceBuy}  value={UsdtValueSell.toLocaleString(undefined, {maximumFractionDigits: 2})} disabled/>
+                                                          placeholder={usdtPriceBuy}
+                                                          value={UsdtValueSell.toLocaleString(undefined, {maximumFractionDigits: 2})}
+                                                          disabled/>
                                         </Form.Group>
 
-                                        <Link as={Link} to="/register"><Button size="lg" variant="secondary" type="submit"
-                                                style={{backgroundColor: '#24A2A2', border: 0}}>
+                                        <Link as={Link} to="/register"><Button size="lg" variant="secondary"
+                                                                               type="submit"
+                                                                               style={{
+                                                                                   backgroundColor: '#24A2A2',
+                                                                                   border: 0
+                                                                               }}>
                                             فروش
                                         </Button></Link>
                                     </Form>

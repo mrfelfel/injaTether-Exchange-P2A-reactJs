@@ -15,7 +15,11 @@
     "basic-shamsi": "^1.0.4",
     "bootstrap": "^4.5.3",
     "coinmarketcap-cryptocurrency-icons": "^1.0.1",
+    "dompurify": "github:cure53/DOMPurify",
     "font-awesome": "^4.7.0",
+    "jsdom": "^17.0.0",
+    "net": "^1.0.2",
+    "next": "^11.1.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-client-session": "0.0.7",
@@ -39,8 +43,11 @@
     "web3": "^1.5.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "dev": "next",
+    "start": "next start",
+    "build": "next build",
+    "start:react": "react-scripts start",
+    "build:react": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
