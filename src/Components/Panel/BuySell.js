@@ -55,6 +55,12 @@ class BuySell extends Component {
             firstif: '',
             orderId: '',
             profile: '',
+            minSell: '',
+            maxSell: '',
+            minBuy: '',
+            maxBuy: '',
+            continueProgress: false,
+            UsdtValueSellValue:'',
         };
 
     }
@@ -97,64 +103,68 @@ class BuySell extends Component {
 
         try {
             setInterval(() => {
-            axios.post(this.getCookie('__react_session__')['url'] + "/coins/single",{sign:'usdt'})
-                .then(response => {
+                axios.post(this.getCookie('__react_session__')['url'] + "/coins/single", {sign: 'usdt'})
+                    .then(response => {
 
-                    if (response.data.status !== 304) {
-                        this.setState({
-                            usdtPriceSell: response.data.sellPrice,
-                            usdtPriceBuy: response.data.buyPrice
-                        })
-                    } else {
-                    }
+                        if (response.data.status !== 304) {
+                            this.setState({
+                                usdtPriceSell: response.data.sellPrice,
+                                usdtPriceBuy: response.data.buyPrice,
+                                minBuy: response.data.minBuy,
+                                maxBuy: response.data.maxBuy,
+                                minSell: response.data.minSell,
+                                maxSell: response.data.maxSell,
+                            })
+                        } else {
+                        }
 
-                });
+                    });
             }, 5000);
         } catch (e) {
         }
 
         try {
-                axios.post(this.getCookie('__react_session__')['url'] + "/coins/network/all",{crypto_id:1})
-                    .then(response => {
-                            this.setState({
-                                subcoinsArray: response.data,
-                            })
-                    });
+            axios.post(this.getCookie('__react_session__')['url'] + "/coins/network/all", {crypto_id: 1})
+                .then(response => {
+                    this.setState({
+                        subcoinsArray: response.data,
+                    })
+                });
         } catch (e) {
         }
 
 
-      /*  const socket = io(this.getCookie('__react_session__')['url']);
+        /*  const socket = io(this.getCookie('__react_session__')['url']);
 
-        socket.on('connect', function () {
-            console.log('Connected');
+          socket.on('connect', function () {
+              console.log('Connected');
 
-            socket.emit('events', {test: 'test'});
-            socket.emit('coins', 0, response =>
-                console.log('coins:', response),
-            );
-            socket.emit('subcoins', 0, response => {
+              socket.emit('events', {test: 'test'});
+              socket.emit('coins', 0, response =>
+                  console.log('coins:', response),
+              );
+              socket.emit('subcoins', 0, response => {
 
-                }
-            );
-        });
-        socket.on('coins', (data) => {
-            this.setState({
-                usdtPriceSell: data[0].sellPrice,
-                usdtPriceBuy: data[0].buyPrice
-            })
-        });
-        socket.on('subcoins', (data) => {
-            this.setState({
-                subcoinsArray: data
-            })
-        });
-        socket.on('exception', function (data) {
+                  }
+              );
+          });
+          socket.on('coins', (data) => {
+              this.setState({
+                  usdtPriceSell: data[0].sellPrice,
+                  usdtPriceBuy: data[0].buyPrice
+              })
+          });
+          socket.on('subcoins', (data) => {
+              this.setState({
+                  subcoinsArray: data
+              })
+          });
+          socket.on('exception', function (data) {
 
-        });
-        socket.on('disconnect', function () {
-            console.log('Disconnected');
-        });*/
+          });
+          socket.on('disconnect', function () {
+              console.log('Disconnected');
+          });*/
         /*  const socket = io('http://localhost:4000');
           socket.on('connect', function() {
               console.log('Connected');
@@ -257,6 +267,7 @@ class BuySell extends Component {
         let value = e.target.value * this.state.usdtPriceBuy
         this.setState({
             UsdtValueSell: value,
+            UsdtValueSellValue: e.target.value,
             SellOrBuy: 'Sell'
         })
     }
@@ -267,7 +278,7 @@ class BuySell extends Component {
         })
         try {
             axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
-            axios.post(this.getCookie('__react_session__')['url'] + "/coins/single", {
+            axios.post(this.getCookie('__react_session__')['url'] + "/coins/network/single", {
                 sign: sign,
             })
                 .then(response => {
@@ -329,37 +340,68 @@ class BuySell extends Component {
 
         if (this.state.wallet !== '' && this.state.network !== '' && this.state.cardSelected !== '' && this.state.firstif === true) {
 
-            try {
-                if (this.state.SellOrBuy === 'Buy') {
-                    await this.setState({
-                        priceSend: this.state.usdtPriceSell,
-                        valueSend: this.state.UsdtValueBuy,
-                        costSend: this.state.UsdtValueBuy - this.state.subCoinData.fee
+
+            //check min value
+            if (this.state.SellOrBuy === 'Buy') {
+                if (this.state.UsdtValueBuy >= this.state.minSell && this.state.UsdtValueBuy <= this.state.maxSell) {
+                    this.setState({
+                        continueProgress: true
                     })
                 } else {
-                    await this.setState({
-                        priceSend: this.state.usdtPriceBuy,
-                        valueSend: this.state.UsdtValueSell,
-                        costSend: this.state.UsdtValueSell
+                    await this.ShowMessage(' کمترین مقدار خرید ' + this.state.minSell + ' بیشترین مقدار خرید ' + this.state.maxSell, 'error');
+                    this.setState({
+                        continueProgress: false
                     })
                 }
-                axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
-                await axios.post(this.getCookie('__react_session__')['url'] + "/orders", {
-                    type: this.state.SellOrBuy,
-                    currency: this.state.currency,
-                    price: this.state.priceSend,
-                    value: this.state.valueSend,
-                    cost: this.state.costSend,
-                    wallet: this.state.wallet,
-                    card_id: this.state.cardSelected,
-                })
-                    .then(response => {
-                        this.setState({
-                            orderStatus: 0,
-                            orderId: response.data.id
+            }
+
+            //check min value
+            if (this.state.SellOrBuy === 'Sell') {
+                if (this.state.UsdtValueSellValue >= this.state.minBuy && this.state.UsdtValueSellValue <= this.state.maxBuy) {
+                    this.setState({
+                        continueProgress: true
+                    })
+                } else {
+                    await this.ShowMessage(' کمترین مقدار فروش ' + this.state.minBuy + ' بیشترین مقدار فروش ' + this.state.maxBuy, 'error');
+                    this.setState({
+                        continueProgress: false
+                    })
+                }
+            }
+
+            if (this.state.continueProgress) {
+                try {
+                    if (this.state.SellOrBuy === 'Buy') {
+                        await this.setState({
+                            priceSend: this.state.usdtPriceSell,
+                            valueSend: this.state.UsdtValueBuy,
+                            costSend: this.state.UsdtValueBuy - this.state.subCoinData.fee
                         })
-                    });
-            } catch (e) {
+                    } else {
+                        await this.setState({
+                            priceSend: this.state.usdtPriceBuy,
+                            valueSend: this.state.UsdtValueSellValue,
+                            costSend: this.state.UsdtValueSell
+                        })
+                    }
+                    axios.defaults.headers.common['Authorization'] = ' Bearer ' + this.getCookie('__react_session__')['token'];
+                    await axios.post(this.getCookie('__react_session__')['url'] + "/orders", {
+                        type: this.state.SellOrBuy,
+                        currency: this.state.currency,
+                        price: this.state.priceSend,
+                        value: this.state.valueSend,
+                        cost: this.state.costSend,
+                        wallet: this.state.wallet,
+                        card_id: this.state.cardSelected,
+                    })
+                        .then(response => {
+                            this.setState({
+                                orderStatus: 0,
+                                orderId: response.data.id
+                            })
+                        });
+                } catch (e) {
+                }
             }
         } else {
             await this.ShowMessage('تمام فیلد ها پر نشده', 'error');
@@ -389,6 +431,11 @@ class BuySell extends Component {
             orderStatus,
             orderId,
             profile,
+            minSell,
+            maxSell,
+            minBuy,
+            maxBuy,
+            UsdtValueSellValue,
         } = this.state;
 
         return (
@@ -424,6 +471,23 @@ class BuySell extends Component {
 
                                         </Row>
 
+                                        {SellOrBuy === "Buy" &&
+                                        <Row className="pr-3">
+                                            <p style={{color: 'red'}}> کمترین مقدار خرید
+                                                تتر {minSell.toLocaleString(undefined, {maximumFractionDigits: 2})}  </p>
+                                            <p style={{color: 'red'}}> بیشترین
+                                                مقدار {maxSell.toLocaleString(undefined, {maximumFractionDigits: 2})}  </p>
+                                        </Row>
+                                        }
+
+                                        {SellOrBuy === "Sell" &&
+                                        <Row className="pr-3">
+                                            <p style={{color: 'red'}}> کمترین مقدار فروش
+                                                تتر {minBuy.toLocaleString(undefined, {maximumFractionDigits: 2})}  </p>
+                                            <p style={{color: 'red'}}> بیشترین
+                                                مقدار {maxBuy.toLocaleString(undefined, {maximumFractionDigits: 2})}  </p>
+                                        </Row>
+                                        }
 
                                         {SellOrBuy === "Buy" &&
                                         <Row style={{textAlign: 'justify'}}>
