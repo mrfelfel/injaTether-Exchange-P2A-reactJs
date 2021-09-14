@@ -393,6 +393,7 @@ class BuySell extends Component {
                         cost: this.state.costSend,
                         wallet: this.state.wallet,
                         card_id: this.state.cardSelected,
+                        network: this.state.network,
                     })
                         .then(response => {
                             this.setState({
