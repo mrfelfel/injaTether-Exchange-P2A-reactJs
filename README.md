@@ -1,3 +1,7 @@
+## InjaTether Project
+injatether is a P2A exchange cryptocurrency , ticketing , manage orders, add coins for sell, add network and edit fee each network coin 
+
+![Screenshot](injatetherIndex.png)
 # Getting Started with Create React App
 000
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
